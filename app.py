@@ -40,7 +40,7 @@ def webhook():
                                 forward_url = DEV_URL
                             else:
                                 return jsonify({"error": "API desconocida"}), 400
-
+                            print("Redireccionando.... :",forward_url)
                             # Reenviar la solicitud al destino adecuado
                             response = requests.post(
                                 forward_url,
