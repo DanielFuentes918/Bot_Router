@@ -39,8 +39,11 @@ def webhook():
                     for change in entry['changes']:
                         if 'value' in change:
                             value = change['value']
+                            print("Datos de la conversación:", value)
+                            print("Headers: ", request.headers)
                             # Detectar el API de WhatsApp usado
                             api_url = value.get('metadata', {}).get('api_url')
+                            print("API de WhatsApp:", api_url)
                             if api_url == PROD_API_URL:
                                 forward_url = PROD_URL
                             elif api_url == DEV_API_URL:
