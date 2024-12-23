@@ -7,21 +7,13 @@ app = Flask(__name__)
 # Configuraciones desde las variables de entorno
 PROD_URL = os.getenv("PROD_URL")  # Webhook de producción
 DEV_URL = os.getenv("DEV_URL")  # Webhook de desarrollo
-PROD_API_URL = os.getenv("PROD_API_URL")  # API de WhatsApp para producción
-DEV_API_URL = os.getenv("DEV_API_URL")  # API de WhatsApp para desarrollo
+PROD_BOT_PHONENUMBER = os.getenv("PROD_BOT_PHONENUMBER")  # Número de producción
+DEV_BOT_PHONENUMBER = os.getenv("DEV_BOT_PHONENUMBER")  # Número de desarrollo
 PROD_VERIFY_TOKEN = os.getenv("PROD_VERIFY_TOKEN")  # Verify token para producción
 DEV_VERIFY_TOKEN = os.getenv("DEV_VERIFY_TOKEN")  # Verify token para desarrollo
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    print("=== Debug del Request ===")
-    print("URL de la solicitud:", request.url)
-    print("Método HTTP:", request.method)
-    print("Cabeceras:", request.headers)
-    print("Argumentos en la URL:", request.args)
-    print("Datos enviados (raw):", request.data)
-    print("Datos parseados como JSON:", request.json)
-    print("=========================")
     if request.method == 'GET':
         # Manejo de verificación del webhook
         verify_token = request.args.get('hub.verify_token')
@@ -36,12 +28,20 @@ def webhook():
             return "Verificación de token fallida", 403
 
     elif request.method == 'POST':
-        # Determinar el destino (producción o desarrollo) según el origen del API de WhatsApp
+        # Depuración del request
+        print("=== Debug del Request ===")
+        print("URL de la solicitud:", request.url)
+        print("Método HTTP:", request.method)
+        print("Cabeceras:", request.headers)
+        print("Argumentos en la URL:", request.args)
+        print("Datos enviados (raw):", request.data)
+        print("Datos parseados como JSON:", request.json)
+        print("=========================")
+
+        # Determinar el destino (producción o desarrollo) según display_phone_number
         data = request.get_json()
         print("Datos recibidos en webhook:", data)
-        print("args:",request.args)
-        print("Headers: ", request.args.get("X-Referer-URL"))
-        # Validar el campo "messages" y el origen de la API de WhatsApp
+
         if 'entry' in data:
             for entry in data['entry']:
                 if 'changes' in entry:
@@ -49,16 +49,19 @@ def webhook():
                         if 'value' in change:
                             value = change['value']
                             print("Datos de la conversación:", value)
-                            # Detectar el API de WhatsApp usado
-                            api_url = value.get('metadata', {}).get('api_url')
-                            print("API de WhatsApp:", api_url)
-                            if api_url == PROD_API_URL:
+
+                            # Detectar el número asociado
+                            phone_number = value.get('metadata', {}).get('display_phone_number')
+                            print("Número detectado:", phone_number)
+
+                            if phone_number == PROD_BOT_PHONENUMBER:
                                 forward_url = PROD_URL
-                            elif api_url == DEV_API_URL:
+                            elif phone_number == DEV_BOT_PHONENUMBER:
                                 forward_url = DEV_URL
                             else:
-                                return jsonify({"error": "API desconocida"}), 400
-                            print("Redireccionando.... :",forward_url)
+                                return jsonify({"error": "Número desconocido"}), 400
+
+                            print("Redireccionando a:", forward_url)
                             # Reenviar la solicitud al destino adecuado
                             response = requests.post(
                                 forward_url,
