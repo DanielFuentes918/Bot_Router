@@ -40,7 +40,7 @@ def webhook():
                         if 'value' in change:
                             value = change['value']
                             print("Datos de la conversación:", value)
-                            print("Headers: ", request.history[0].url)
+                            print("Headers: ", request.url)
                             # Detectar el API de WhatsApp usado
                             api_url = value.get('metadata', {}).get('api_url')
                             print("API de WhatsApp:", api_url)
