@@ -31,7 +31,8 @@ def webhook():
         # Determinar el destino (producción o desarrollo) según el origen del API de WhatsApp
         data = request.get_json()
         print("Datos recibidos en webhook:", data)
-
+        print("args:",request.args)
+        print("Headers: ", request.args.get("X-Referer-URL"))
         # Validar el campo "messages" y el origen de la API de WhatsApp
         if 'entry' in data:
             for entry in data['entry']:
@@ -40,7 +41,6 @@ def webhook():
                         if 'value' in change:
                             value = change['value']
                             print("Datos de la conversación:", value)
-                            print("Headers: ", request.headers.get("X-Referer-URL"))
                             # Detectar el API de WhatsApp usado
                             api_url = value.get('metadata', {}).get('api_url')
                             print("API de WhatsApp:", api_url)
