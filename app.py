@@ -14,6 +14,14 @@ DEV_VERIFY_TOKEN = os.getenv("DEV_VERIFY_TOKEN")  # Verify token para desarrollo
 
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
+    print("=== Debug del Request ===")
+    print("URL de la solicitud:", request.url)
+    print("Método HTTP:", request.method)
+    print("Cabeceras:", request.headers)
+    print("Argumentos en la URL:", request.args)
+    print("Datos enviados (raw):", request.data)
+    print("Datos parseados como JSON:", request.json)
+    print("=========================")
     if request.method == 'GET':
         # Manejo de verificación del webhook
         verify_token = request.args.get('hub.verify_token')
