@@ -53,7 +53,8 @@ def webhook():
                             # Detectar el número asociado
                             phone_number = value.get('metadata', {}).get('display_phone_number')
                             print("Número detectado:", phone_number)
-
+                            print(PROD_BOT_PHONENUMBER)
+                            print(DEV_BOT_PHONENUMBER)
                             if phone_number == PROD_BOT_PHONENUMBER:
                                 forward_url = PROD_URL
                             elif phone_number == DEV_BOT_PHONENUMBER:
