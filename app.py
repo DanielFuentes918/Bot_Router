@@ -24,8 +24,6 @@ def webhook():
         # Determinar el verify_token correcto
         if verify_token == PROD_VERIFY_TOKEN:
             return str(challenge), 200
-        elif verify_token == DEV_VERIFY_TOKEN:
-            return str(challenge), 200
         else:
             return "Verificación de token fallida", 403
 
