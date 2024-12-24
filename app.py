@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 import requests
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
 # Configuraciones desde las variables de entorno
+load_dotenv()
 PROD_URL = os.getenv("PROD_URL")  # Webhook de producción
 DEV_URL = os.getenv("DEV_URL")  # Webhook de desarrollo
 PROD_BOT_PHONENUMBER = os.getenv("PROD_BOT_PHONENUMBER")  # Número de producción
