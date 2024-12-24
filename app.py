@@ -38,6 +38,13 @@ def webhook():
         print("Datos parseados como JSON:", request.json)
         print("=========================")
 
+        print (PROD_URL)
+        print (DEV_URL)
+        print (PROD_BOT_PHONENUMBER)
+        print (DEV_BOT_PHONENUMBER)
+        print (PROD_VERIFY_TOKEN)
+        print (DEV_VERIFY_TOKEN)
+
         # Determinar el destino (producción o desarrollo) según display_phone_number
         data = request.get_json()
         print("Datos recibidos en webhook:", data)
