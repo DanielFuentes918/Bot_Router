@@ -61,31 +61,40 @@ def webhook():
 
         return jsonify({"error": "Datos no válidos"}), 400
 
-@app.route('/pull', methods=['GET','POST'])
+@app.route('/pull', methods=['GET', 'POST'])
 def pullIdentification():
     response = {"status": "success", "message": "Operación recibida y en proceso."}
 
-    # Obtener los datos del JSON enviado en la solicitud
-    data = request.json
-    print(f"Datos recibidos: {data}")
+    try:
+        # Obtener los datos del JSON enviado en la solicitud
+        data = request.json
+        print(f"Datos recibidos: {data}")
 
         # Verificar si el campo 'ref' existe en los datos
-    if 'ref' in data:
-        # Extraer la rama (sin la parte 'refs/heads/')
-        branch = data['ref'].replace('refs/heads/', '')
-        print(f"La rama en la que se hizo el commit es: {branch}")
-        if branch.lower() == 'main':
-            load_dotenv()
-            repo_path = os.getenv("repo_path")
-            service = os.getenv("service")
-            pull(repo_path, service)
-        elif branch.lower() == 'dev':
-            load_dotenv()
-            repo_path = os.getenv("repo_path2")
-            service = os.getenv("service2")
-            pull(repo_path, service)
+        if 'ref' in data:
+            # Extraer la rama (sin la parte 'refs/heads/')
+            branch = data['ref'].replace('refs/heads/', '')
+            print(f"La rama en la que se hizo el commit es: {branch}")
+            if branch.lower() == 'main':
+                load_dotenv()
+                repo_path = os.getenv("repo_path")
+                service = os.getenv("service")
+                pull(repo_path, service)
+            elif branch.lower() == 'dev':
+                load_dotenv()
+                repo_path = os.getenv("repo_path2")
+                service = os.getenv("service2")
+                pull(repo_path, service)
+            else:
+                response = {"status": "error", "message": "Rama no válida."}
         else:
-            response = {"status": "error", "message": "Rama no válida."}
+            response = {"status": "error", "message": "Campo 'ref' no encontrado en los datos recibidos."}
+
+    except Exception as e:
+        response = {"status": "error", "message": f"Error interno: {str(e)}"}
+
+
+    return jsonify(response), 200
 
 
 if __name__ == '__main__':
