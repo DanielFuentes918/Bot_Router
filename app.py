@@ -98,6 +98,7 @@ def pullIdentification():
 
 @app.route('/send_notification', methods=['POST'])
 def send_notification():
+    print("Datos recibidos en send_notification:", request.json)
     try:
         # Obtener los datos de la solicitud
         data = request.get_json()
