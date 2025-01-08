@@ -102,13 +102,13 @@ def send_notification():
     try:
         # Obtener los datos de la solicitud
         data = request.get_json()
-        headers = dict(request.headers)  # Copiar los encabezados
+        # headers = dict(request.headers)  # Copiar los encabezados
 
         # URL al puerto interno 5002
         forward_url = "http://127.0.0.1:5002//send_notification"
 
         # Reenviar la solicitud al puerto 5002
-        response = requests.post(forward_url, json=data, headers=headers)
+        response = requests.post(forward_url, json=data)
 
         # Devolver la respuesta del servidor interno
         return jsonify(response.json()), response.status_code
