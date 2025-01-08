@@ -96,6 +96,24 @@ def pullIdentification():
 
     return jsonify(response), 200
 
+@app.route('/send_notification', methods=['POST'])
+def send_notification():
+    try:
+        # Obtener los datos de la solicitud
+        data = request.get_json()
+        headers = dict(request.headers)  # Copiar los encabezados
+
+        # URL al puerto interno 5002
+        forward_url = "http://localhost:5002/send_notification"
+
+        # Reenviar la solicitud al puerto 5002
+        response = requests.post(forward_url, json=data, headers=headers)
+
+        # Devolver la respuesta del servidor interno
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003)
