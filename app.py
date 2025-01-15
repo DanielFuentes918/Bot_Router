@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 import requests
 import os
 from dotenv import load_dotenv
 from Config import Config
 from Utils import pull
 config = Config()
+
+all_truck_bp = Blueprint('all_truck', __name__)
 
 app = Flask(__name__)
 
@@ -109,6 +111,25 @@ def send_notification():
 
         # Reenviar la solicitud al puerto 5002
         response = requests.post(forward_url, json=data)
+
+        # Devolver la respuesta del servidor interno
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@all_truck_bp.route('/all_truck_details', methods=['GET'])
+def redirect_all_truck_details():
+    print("Solicitud recibida en /all_truck_details")
+
+    try:
+        # URL al puerto interno donde se procesan las solicitudes relacionadas con AllTruckDetails
+        forward_url = "http://127.0.0.1:5002/all_truck_details"
+
+        # Pasar los parámetros de la solicitud GET a la redirección
+        params = request.args
+
+        # Realizar la redirección mediante una solicitud GET al forward_url
+        response = requests.get(forward_url, params=params)
 
         # Devolver la respuesta del servidor interno
         return jsonify(response.json()), response.status_code
