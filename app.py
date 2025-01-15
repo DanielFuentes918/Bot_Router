@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify
 import requests
 import os
 from dotenv import load_dotenv
@@ -6,7 +6,6 @@ from Config import Config
 from Utils import pull
 config = Config()
 
-all_truck_bp = Blueprint('all_truck', __name__)
 
 app = Flask(__name__)
 
@@ -117,7 +116,7 @@ def send_notification():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@all_truck_bp.route('/all_truck_details', methods=['GET'])
+@app.route('/all_truck_details', methods=['GET'])
 def redirect_all_truck_details():
     print("Solicitud recibida en /all_truck_details")
 
@@ -135,6 +134,7 @@ def redirect_all_truck_details():
         return jsonify(response.json()), response.status_code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == '__main__':
