@@ -135,6 +135,23 @@ def redirect_all_truck_details():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/activar_gps', methods=['POST'])
+def redirect_activar_gps():
+    print("Solicitud recibida en /activar_gps")
+    try:
+        data = request.get_json()
+        print("Datos recibidos:", data)
+
+        # URL del servicio real del scraper
+        forward_url = "http://127.0.0.1:5002/activar_gps"
+
+        response = requests.post(forward_url, json=data)
+        print("Respuesta del servicio:", response.text)
+
+        return jsonify(response.json()), response.status_code
+    except Exception as e:
+        print("❌ Error:", str(e))
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
 if __name__ == '__main__':
